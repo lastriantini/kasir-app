@@ -3,12 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; 
+use Illuminate\Http\RedirectResponse;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function loginAuth(Request $request)
+    {
+        // Validation
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+    
+        // Get email and password from the request
+        $credentials = $request->only(['email', 'password']);
+    
+        // Attempt authentication
+        if (Auth::attempt($credentials)) {
+            return redirect('/dashboard');
+        } else {
+            // Redirect back with an error message
+            return redirect()->back()->with('failed', 'Email and password do not match. Please try again!');
+        }
+    }
+
     public function index()
     {
         //
@@ -25,9 +47,9 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        
     }
 
     /**
